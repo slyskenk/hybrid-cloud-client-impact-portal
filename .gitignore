@@ -15,5 +15,15 @@ Thumbs.db
 *.class
 *.jar
 *.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+*.ctxt
+.mtj.tmp/
+hs_err_pid*
+replay_pid*
 
 h2-data/
