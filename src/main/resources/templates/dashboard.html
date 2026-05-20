@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hybrid Cloud Client Impact Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
+    <nav>
+        <a th:href="@{/clients}">Clients</a>
+        <a th:href="@{/projects}">Projects</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="link-button">Sign out</button>
+        </form>
+    </nav>
+</header>
+
+<main class="page">
+    <section class="hero-band">
+        <div>
+            <p class="eyebrow">Consulting delivery cockpit</p>
+            <h1>Client impact, cloud readiness, and project momentum in one view.</h1>
+        </div>
+        <div class="score-pill">
+            <span th:text="${#numbers.formatDecimal(summary.averageReadinessScore(), 1, 1)}">0.0</span>
+            <small>avg AI readiness</small>
+        </div>
+    </section>
+
+    <section class="metric-grid">
+        <article class="metric-card">
+            <span>Total clients</span>
+            <strong th:text="${summary.totalClients()}">0</strong>
+        </article>
+        <article class="metric-card">
+            <span>Active projects</span>
+            <strong th:text="${summary.activeProjects()}">0</strong>
+        </article>
+        <article class="metric-card">
+            <span>Blocked projects</span>
+            <strong th:text="${summary.blockedProjects()}">0</strong>
+        </article>
+    </section>
+
+    <section class="content-grid">
+        <article class="panel">
+            <div class="section-heading">
+                <h2>Client Dashboard</h2>
+                <input id="client-search" type="search" placeholder="Search clients">
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Industry</th>
+                        <th>Region</th>
+                        <th>AI Score</th>
+                        <th>Risk</th>
+                    </tr>
+                    </thead>
+                    <tbody id="client-table">
+                    <tr th:each="client : ${clients}">
+                        <td th:text="${client.name}">Client</td>
+                        <td th:text="${client.industry}">Industry</td>
+                        <td th:text="${client.region}">Region</td>
+                        <td><span class="score" th:text="${client.aiReadinessScore}">0</span></td>
+                        <td><span class="status" th:text="${client.riskLevel}">MEDIUM</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="panel">
+            <div class="section-heading">
+                <h2>Hybrid Cloud Analyzer</h2>
+                <button id="run-analysis" type="button">Run sample</button>
+            </div>
+            <div id="analysis-result" class="recommendation">
+                <span>Ready</span>
+                <strong>Sample assessment available</strong>
+            </div>
+        </article>
+    </section>
+
+    <section class="content-grid">
+        <article class="panel">
+            <div class="section-heading">
+                <h2>Project Tracker</h2>
+                <a class="small-link" th:href="@{/projects}">Open projects</a>
+            </div>
+            <div class="project-list">
+                <div class="project-row" th:each="project : ${projects}">
+                    <div>
+                        <strong th:text="${project.name}">Project</strong>
+                        <span th:text="${project.assignedConsultant}">Consultant</span>
+                    </div>
+                    <span class="status" th:text="${project.status}">PLANNED</span>
+                </div>
+            </div>
+        </article>
+
+        <article class="panel">
+            <div class="section-heading">
+                <h2>Mock Cloud Resources</h2>
+                <span class="muted">/mock-cloud/resources</span>
+            </div>
+            <div class="resource-list">
+                <div class="resource-row" th:each="resource : ${resources}">
+                    <div>
+                        <strong th:text="${resource.type}">Resource</strong>
+                        <span th:text="${resource.provider + ' - ' + resource.region}">Provider</span>
+                    </div>
+                    <span class="status" th:text="${resource.health}">GREEN</span>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

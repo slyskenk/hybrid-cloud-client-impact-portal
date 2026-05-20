@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clients | Hybrid Cloud Client Impact Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
+    <nav>
+        <a th:href="@{/clients}">Clients</a>
+        <a th:href="@{/projects}">Projects</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="link-button">Sign out</button>
+        </form>
+    </nav>
+</header>
+
+<main class="page">
+    <section class="page-heading">
+        <p class="eyebrow">Client portfolio</p>
+        <h1>Readiness, risk, and industry coverage.</h1>
+    </section>
+
+    <section class="content-grid">
+        <article class="panel">
+            <div class="section-heading">
+                <h2>Clients</h2>
+                <input id="client-search" type="search" placeholder="Search clients">
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Industry</th>
+                        <th>Region</th>
+                        <th>Contact</th>
+                        <th>AI Score</th>
+                    </tr>
+                    </thead>
+                    <tbody id="client-table">
+                    <tr th:each="client : ${clients}">
+                        <td th:text="${client.name}">Name</td>
+                        <td th:text="${client.industry}">Industry</td>
+                        <td th:text="${client.region}">Region</td>
+                        <td th:text="${client.contactEmail}">Email</td>
+                        <td><span class="score" th:text="${client.aiReadinessScore}">0</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="panel narrow">
+            <div class="section-heading">
+                <h2>Industry Map</h2>
+            </div>
+            <div class="industry-list">
+                <div class="industry-row" th:each="entry : ${industries}">
+                    <span th:text="${entry.key}">Industry</span>
+                    <strong th:text="${entry.value.size()}">0</strong>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

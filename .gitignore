@@ -1,0 +1,17 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+.idea/
+.vscode/
+*.iml
+
+.DS_Store
+Thumbs.db
+
+*.log
+*.class
+*.jar
+*.war
+
+h2-data/

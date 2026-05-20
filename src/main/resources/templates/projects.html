@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Projects | Hybrid Cloud Client Impact Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
+    <nav>
+        <a th:href="@{/clients}">Clients</a>
+        <a th:href="@{/projects}">Projects</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="link-button">Sign out</button>
+        </form>
+    </nav>
+</header>
+
+<main class="page">
+    <section class="page-heading">
+        <p class="eyebrow">Project tracker</p>
+        <h1>Milestones, owners, dates, and status.</h1>
+    </section>
+
+    <section class="panel">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Client</th>
+                    <th>Consultant</th>
+                    <th>Path</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="project : ${projects}">
+                    <td>
+                        <strong th:text="${project.name}">Project</strong>
+                        <span class="muted block" th:text="${project.description}">Description</span>
+                    </td>
+                    <td th:text="${project.client.name}">Client</td>
+                    <td th:text="${project.assignedConsultant}">Consultant</td>
+                    <td th:text="${project.migrationPath}">Path</td>
+                    <td th:text="${project.deadline}">Date</td>
+                    <td><span class="status" th:text="${project.status}">PLANNED</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

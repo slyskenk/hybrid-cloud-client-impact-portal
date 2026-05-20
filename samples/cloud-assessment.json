@@ -1,0 +1,14 @@
+{
+  "clientName": "Horizon Financial",
+  "workloads": [
+    "payments",
+    "fraud analytics",
+    "customer portal"
+  ],
+  "legacySystemCount": 5,
+  "complianceRequired": true,
+  "currentCloudUsagePercent": 35,
+  "automationMaturity": 4,
+  "integrationComplexity": 6,
+  "dataSensitivity": "HIGH"
+}

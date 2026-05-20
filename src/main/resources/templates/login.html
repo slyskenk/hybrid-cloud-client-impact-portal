@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in | Hybrid Cloud Client Impact Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="login-panel">
+        <p class="eyebrow">IBM Consulting portfolio demo</p>
+        <h1>Hybrid Cloud Client Impact Portal</h1>
+        <form th:action="@{/login}" method="post" class="login-form">
+            <label>
+                Username
+                <input name="username" type="text" autocomplete="username" required>
+            </label>
+            <label>
+                Password
+                <input name="password" type="password" autocomplete="current-password" required>
+            </label>
+            <button type="submit">Sign in</button>
+        </form>
+        <p class="form-message error" th:if="${param.error}">Invalid username or password.</p>
+        <p class="form-message" th:if="${param.logout}">You have been signed out.</p>
+        <div class="demo-users">
+            <span>admin / admin123</span>
+            <span>consultant / consult123</span>
+            <span>client / client123</span>
+        </div>
+    </section>
+</main>
+</body>
+</html>

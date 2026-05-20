@@ -1,0 +1,14 @@
+<CloudAssessmentRequest>
+    <clientName>Horizon Financial</clientName>
+    <workloads>
+        <workload>payments</workload>
+        <workload>fraud analytics</workload>
+        <workload>customer portal</workload>
+    </workloads>
+    <legacySystemCount>5</legacySystemCount>
+    <complianceRequired>true</complianceRequired>
+    <currentCloudUsagePercent>35</currentCloudUsagePercent>
+    <automationMaturity>4</automationMaturity>
+    <integrationComplexity>6</integrationComplexity>
+    <dataSensitivity>HIGH</dataSensitivity>
+</CloudAssessmentRequest>
