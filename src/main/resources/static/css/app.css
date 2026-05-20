@@ -28,7 +28,9 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
     font: inherit;
 }
 
@@ -42,12 +44,25 @@ button {
     font-weight: 700;
 }
 
-input {
+input,
+select,
+textarea {
     border: 1px solid var(--line);
     border-radius: 6px;
     min-height: 2.5rem;
     padding: 0 0.75rem;
     width: min(100%, 18rem);
+}
+
+textarea {
+    min-height: 7rem;
+    padding: 0.75rem;
+    resize: vertical;
+    width: 100%;
+}
+
+select {
+    background: #ffffff;
 }
 
 .topbar {
@@ -184,6 +199,10 @@ input {
     margin: 0;
 }
 
+.section-heading.compact {
+    margin: 1.25rem 0 0.75rem;
+}
+
 .small-link {
     color: var(--blue);
     font-weight: 700;
@@ -257,6 +276,63 @@ th {
     margin-top: 0;
 }
 
+.stacked-form {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.field {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.field span {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.field input,
+.field select {
+    width: 100%;
+}
+
+.inline-form {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.inline-form select {
+    min-width: 9rem;
+    width: auto;
+}
+
+.inline-form button {
+    padding: 0.55rem 0.75rem;
+}
+
+.divider {
+    border-top: 1px solid var(--line);
+    margin: 1.25rem 0 0;
+}
+
+.flash {
+    border-left: 4px solid var(--blue);
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+}
+
+.flash.success {
+    background: #defbe6;
+    border-left-color: var(--green);
+}
+
+.flash.error {
+    background: #fff1f1;
+    border-left-color: #da1e28;
+}
+
 .recommendation {
     background: #edf5ff;
     border-left: 4px solid var(--blue);
@@ -278,6 +354,33 @@ th {
 .recommendation ul {
     margin: 0.75rem 0 0;
     padding-left: 1.1rem;
+}
+
+.callout {
+    background: var(--soft);
+    border-left: 4px solid var(--amber);
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem;
+}
+
+.callout span {
+    color: var(--muted);
+}
+
+.code-input,
+.mono-block {
+    font-family: Consolas, "Liberation Mono", monospace;
+}
+
+.mono-block {
+    background: #161616;
+    border-radius: 6px;
+    color: #f4f4f4;
+    max-height: 20rem;
+    overflow: auto;
+    padding: 1rem;
+    white-space: pre-wrap;
 }
 
 .login-page {
@@ -345,6 +448,7 @@ th {
     .topbar,
     .topbar nav,
     .hero-band,
+    .page-heading,
     .section-heading {
         align-items: flex-start;
         flex-direction: column;
@@ -362,5 +466,15 @@ th {
     .hero-band h1,
     .page-heading h1 {
         font-size: 1.55rem;
+    }
+
+    .inline-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .inline-form select,
+    .inline-form button {
+        width: 100%;
     }
 }

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Analytics | Hybrid Cloud Client Impact Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
+    <nav>
+        <a th:href="@{/clients}">Clients</a>
+        <a th:href="@{/projects}">Projects</a>
+        <a th:href="@{/analytics}">Analytics</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="link-button">Sign out</button>
+        </form>
+    </nav>
+</header>
+
+<main class="page">
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Hybrid cloud analyzer</p>
+            <h1>Turn JSON or XML assessment data into a migration recommendation.</h1>
+        </div>
+        <div class="score-pill">
+            <span th:text="${#numbers.formatDecimal(summary.averageReadinessScore(), 1, 1)}">0.0</span>
+            <small>avg readiness</small>
+        </div>
+    </section>
+
+    <section class="content-grid">
+        <article class="panel">
+            <div class="section-heading">
+                <h2>Assessment Input</h2>
+            </div>
+            <form class="stacked-form" th:action="@{/analytics}" th:object="${analyzerForm}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <label class="field">
+                    <span>Format</span>
+                    <select th:field="*{format}">
+                        <option th:each="format : ${formats}" th:value="${format}" th:text="${format}">JSON</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Payload</span>
+                    <textarea class="code-input" th:field="*{payload}" rows="18" spellcheck="false"></textarea>
+                </label>
+                <button type="submit">Analyze assessment</button>
+            </form>
+        </article>
+
+        <aside class="panel narrow">
+            <div class="section-heading">
+                <h2>Recommendation</h2>
+            </div>
+            <p class="flash error" th:if="${analysisError}" th:text="${analysisError}">Error</p>
+            <div class="recommendation" th:if="${recommendation}">
+                <span th:text="${recommendation.riskLevel() + ' risk | ' + recommendation.migrationPath()}">Risk</span>
+                <strong th:text="${recommendation.readinessScore() + '% readiness, ' + recommendation.estimatedSprintCount() + ' sprint plan'}">Score</strong>
+                <ul>
+                    <li th:each="item : ${recommendation.recommendations()}" th:text="${item}">Recommendation</li>
+                </ul>
+            </div>
+            <div class="callout" th:unless="${recommendation}">
+                <strong>Ready for analysis</strong>
+                <span>Paste a client cloud assessment and run the analyzer.</span>
+            </div>
+            <div th:if="${recommendationJson}">
+                <div class="section-heading compact">
+                    <h2>Export JSON</h2>
+                </div>
+                <pre class="mono-block" th:text="${recommendationJson}">JSON</pre>
+            </div>
+        </aside>
+    </section>
+</main>
+</body>
+</html>

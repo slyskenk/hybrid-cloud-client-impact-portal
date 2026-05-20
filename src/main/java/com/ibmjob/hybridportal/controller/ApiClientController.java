@@ -1,6 +1,7 @@
 package com.ibmjob.hybridportal.controller;
 
 import com.ibmjob.hybridportal.domain.ClientProfile;
+import com.ibmjob.hybridportal.dto.ClientResponse;
 import com.ibmjob.hybridportal.service.ClientService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -30,19 +31,21 @@ public class ApiClientController {
     }
 
     @GetMapping
-    public List<ClientProfile> list(@RequestParam(required = false) String q) {
-        return clientService.search(q);
+    public List<ClientResponse> list(@RequestParam(required = false) String q) {
+        return clientService.search(q).stream()
+                .map(ClientResponse::from)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public ClientProfile one(@PathVariable Long id) {
-        return clientService.findById(id);
+    public ClientResponse one(@PathVariable Long id) {
+        return ClientResponse.from(clientService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ClientProfile create(@Valid @RequestBody ClientProfile clientProfile) {
+    public ClientResponse create(@Valid @RequestBody ClientProfile clientProfile) {
         log.info("Creating client profile name={}", clientProfile.getName());
-        return clientService.save(clientProfile);
+        return ClientResponse.from(clientService.save(clientProfile));
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ConsultingProjectRepository extends JpaRepository<ConsultingProject, Long> {
 
@@ -13,4 +14,8 @@ public interface ConsultingProjectRepository extends JpaRepository<ConsultingPro
 
     @EntityGraph(attributePaths = {"client"})
     List<ConsultingProject> findAllByOrderByDeadlineAsc();
+
+    @Override
+    @EntityGraph(attributePaths = {"client"})
+    Optional<ConsultingProject> findById(Long id);
 }

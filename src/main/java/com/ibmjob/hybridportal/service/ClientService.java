@@ -1,6 +1,7 @@
 package com.ibmjob.hybridportal.service;
 
 import com.ibmjob.hybridportal.domain.ClientProfile;
+import com.ibmjob.hybridportal.dto.ClientRequest;
 import com.ibmjob.hybridportal.repository.ClientProfileRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,18 @@ public class ClientService {
     }
 
     public ClientProfile save(ClientProfile clientProfile) {
+        return clientProfileRepository.save(clientProfile);
+    }
+
+    public ClientProfile create(ClientRequest request) {
+        ClientProfile clientProfile = new ClientProfile(
+                request.getName(),
+                request.getIndustry(),
+                request.getRegion(),
+                request.getContactEmail(),
+                request.getAiReadinessScore(),
+                request.getRiskLevel()
+        );
         return clientProfileRepository.save(clientProfile);
     }
 

@@ -2,8 +2,10 @@ package com.ibmjob.hybridportal.controller;
 
 import com.ibmjob.hybridportal.domain.ConsultingProject;
 import com.ibmjob.hybridportal.dto.ProjectRequest;
+import com.ibmjob.hybridportal.dto.ProjectResponse;
 import com.ibmjob.hybridportal.dto.ProjectStatusUpdate;
 import com.ibmjob.hybridportal.service.ProjectService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,20 +33,22 @@ public class ApiProjectController {
     }
 
     @GetMapping
-    public List<ConsultingProject> list() {
-        return projectService.findAll();
+    public List<ProjectResponse> list() {
+        return projectService.findAll().stream()
+                .map(ProjectResponse::from)
+                .toList();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ConsultingProject create(@RequestBody ProjectRequest request) {
+    public ProjectResponse create(@Valid @RequestBody ProjectRequest request) {
         log.info("Creating project name={} clientId={}", request.getName(), request.getClientId());
-        return projectService.create(request);
+        return ProjectResponse.from(projectService.create(request));
     }
 
     @PatchMapping("/{id}/status")
-    public ConsultingProject updateStatus(@PathVariable Long id, @RequestBody ProjectStatusUpdate update) {
+    public ProjectResponse updateStatus(@PathVariable Long id, @Valid @RequestBody ProjectStatusUpdate update) {
         log.info("Updating project id={} status={}", id, update.getStatus());
-        return projectService.updateStatus(id, update.getStatus());
+        return ProjectResponse.from(projectService.updateStatus(id, update.getStatus()));
     }
 }

@@ -49,6 +49,6 @@ public class ProjectService {
         ConsultingProject project = consultingProjectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found: " + id));
         project.setStatus(status);
-        return project;
+        return consultingProjectRepository.save(project);
     }
 }

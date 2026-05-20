@@ -12,6 +12,7 @@
     <nav>
         <a th:href="@{/clients}">Clients</a>
         <a th:href="@{/projects}">Projects</a>
+        <a th:href="@{/analytics}">Analytics</a>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="link-button">Sign out</button>
         </form>
@@ -20,9 +21,14 @@
 
 <main class="page">
     <section class="page-heading">
-        <p class="eyebrow">Client portfolio</p>
-        <h1>Readiness, risk, and industry coverage.</h1>
+        <div>
+            <p class="eyebrow">Client portfolio</p>
+            <h1>Readiness, risk, and industry coverage.</h1>
+        </div>
     </section>
+
+    <p class="flash success" th:if="${success}" th:text="${success}">Saved</p>
+    <p class="flash error" th:if="${formError}" th:text="${formError}">Error</p>
 
     <section class="content-grid">
         <article class="panel">
@@ -39,6 +45,7 @@
                         <th>Region</th>
                         <th>Contact</th>
                         <th>AI Score</th>
+                        <th>Risk</th>
                     </tr>
                     </thead>
                     <tbody id="client-table">
@@ -48,14 +55,50 @@
                         <td th:text="${client.region}">Region</td>
                         <td th:text="${client.contactEmail}">Email</td>
                         <td><span class="score" th:text="${client.aiReadinessScore}">0</span></td>
+                        <td><span class="status" th:text="${client.riskLevel}">MEDIUM</span></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </article>
 
-        <article class="panel narrow">
+        <aside class="panel narrow">
             <div class="section-heading">
+                <h2>Add Client</h2>
+            </div>
+            <form class="stacked-form" th:action="@{/clients}" th:object="${clientForm}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <label class="field">
+                    <span>Name</span>
+                    <input th:field="*{name}" type="text" required>
+                </label>
+                <label class="field">
+                    <span>Industry</span>
+                    <input th:field="*{industry}" type="text" required>
+                </label>
+                <label class="field">
+                    <span>Region</span>
+                    <input th:field="*{region}" type="text" required>
+                </label>
+                <label class="field">
+                    <span>Contact Email</span>
+                    <input th:field="*{contactEmail}" type="email" required>
+                </label>
+                <label class="field">
+                    <span>AI Readiness Score</span>
+                    <input th:field="*{aiReadinessScore}" type="number" min="0" max="100" required>
+                </label>
+                <label class="field">
+                    <span>Risk Level</span>
+                    <select th:field="*{riskLevel}">
+                        <option th:each="risk : ${riskLevels}" th:value="${risk}" th:text="${risk}">MEDIUM</option>
+                    </select>
+                </label>
+                <button type="submit">Create client</button>
+            </form>
+
+            <div class="divider"></div>
+            <div class="section-heading compact">
                 <h2>Industry Map</h2>
             </div>
             <div class="industry-list">
@@ -64,7 +107,7 @@
                     <strong th:text="${entry.value.size()}">0</strong>
                 </div>
             </div>
-        </article>
+        </aside>
     </section>
 </main>
 

@@ -8,10 +8,11 @@
 </head>
 <body>
 <header class="topbar">
-    <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
+        <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
     <nav>
         <a th:href="@{/clients}">Clients</a>
         <a th:href="@{/projects}">Projects</a>
+        <a th:href="@{/analytics}">Analytics</a>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="link-button">Sign out</button>
         </form>
@@ -78,8 +79,9 @@
         <article class="panel">
             <div class="section-heading">
                 <h2>Hybrid Cloud Analyzer</h2>
-                <button id="run-analysis" type="button">Run sample</button>
+                <a class="small-link" th:href="@{/analytics}">Open analyzer</a>
             </div>
+            <button id="run-analysis" type="button">Run sample</button>
             <div id="analysis-result" class="recommendation">
                 <span>Ready</span>
                 <strong>Sample assessment available</strong>
