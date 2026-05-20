@@ -31,6 +31,13 @@ Requirements:
 mvn spring-boot:run
 ```
 
+This workspace also has a local Maven install under `tools/apache-maven-3.9.16`.
+On Windows, you can build without a global Maven install by running:
+
+```powershell
+tools\apache-maven-3.9.16\bin\mvn.cmd "-Dmaven.repo.local=.m2\repository" package
+```
+
 Then open:
 
 ```text
