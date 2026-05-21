@@ -53,6 +53,26 @@
                         <td>
                             <strong th:text="${project.name}">Project</strong>
                             <span class="muted block" th:text="${project.description}">Description</span>
+                            <div class="milestone-list compact" th:if="${!#lists.isEmpty(project.milestones)}">
+                                <div class="milestone-item" th:each="milestone : ${project.milestones}" th:classappend="${milestone.complete} ? ' complete'">
+                                    <form th:action="@{/projects/{projectId}/milestones/{milestoneId}/complete(projectId=${project.id}, milestoneId=${milestone.id})}" method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <input type="hidden" name="complete" th:value="${!milestone.complete}">
+                                        <button type="submit" class="milestone-check" th:text="${milestone.complete ? 'Done' : 'Open'}">Open</button>
+                                    </form>
+                                    <div>
+                                        <strong th:text="${milestone.title}">Milestone</strong>
+                                        <span th:text="${milestone.targetDate}">Date</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="muted compact-copy" th:if="${#lists.isEmpty(project.milestones)}">No milestones yet.</p>
+                            <form class="milestone-form" th:action="@{/projects/{id}/milestones(id=${project.id})}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input name="title" type="text" placeholder="New milestone" aria-label="New milestone title" required>
+                                <input name="targetDate" type="date" aria-label="Milestone target date" required>
+                                <button type="submit">Add</button>
+                            </form>
                         </td>
                         <td th:text="${project.client.name}">Client</td>
                         <td th:text="${project.assignedConsultant}">Consultant</td>

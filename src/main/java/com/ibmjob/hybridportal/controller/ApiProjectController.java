@@ -1,6 +1,8 @@
 package com.ibmjob.hybridportal.controller;
 
 import com.ibmjob.hybridportal.domain.ConsultingProject;
+import com.ibmjob.hybridportal.dto.MilestoneRequest;
+import com.ibmjob.hybridportal.dto.MilestoneStatusUpdate;
 import com.ibmjob.hybridportal.dto.ProjectRequest;
 import com.ibmjob.hybridportal.dto.ProjectResponse;
 import com.ibmjob.hybridportal.dto.ProjectStatusUpdate;
@@ -50,5 +52,18 @@ public class ApiProjectController {
     public ProjectResponse updateStatus(@PathVariable Long id, @Valid @RequestBody ProjectStatusUpdate update) {
         log.info("Updating project id={} status={}", id, update.getStatus());
         return ProjectResponse.from(projectService.updateStatus(id, update.getStatus()));
+    }
+
+    @PostMapping("/{id}/milestones")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProjectResponse addMilestone(@PathVariable Long id, @Valid @RequestBody MilestoneRequest request) {
+        log.info("Adding milestone projectId={} title={}", id, request.getTitle());
+        return ProjectResponse.from(projectService.addMilestone(id, request));
+    }
+
+    @PatchMapping("/{id}/milestones/{milestoneId}")
+    public ProjectResponse updateMilestone(@PathVariable Long id, @PathVariable Long milestoneId, @Valid @RequestBody MilestoneStatusUpdate update) {
+        log.info("Updating milestone projectId={} milestoneId={} complete={}", id, milestoneId, update.getComplete());
+        return ProjectResponse.from(projectService.updateMilestoneCompletion(id, milestoneId, update.getComplete()));
     }
 }

@@ -2,7 +2,9 @@ package com.ibmjob.hybridportal.service;
 
 import com.ibmjob.hybridportal.domain.ClientProfile;
 import com.ibmjob.hybridportal.domain.ConsultingProject;
+import com.ibmjob.hybridportal.domain.Milestone;
 import com.ibmjob.hybridportal.domain.ProjectStatus;
+import com.ibmjob.hybridportal.dto.MilestoneRequest;
 import com.ibmjob.hybridportal.dto.ProjectRequest;
 import com.ibmjob.hybridportal.repository.ClientProfileRepository;
 import com.ibmjob.hybridportal.repository.ConsultingProjectRepository;
@@ -46,9 +48,32 @@ public class ProjectService {
 
     @Transactional
     public ConsultingProject updateStatus(Long id, ProjectStatus status) {
-        ConsultingProject project = consultingProjectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Project not found: " + id));
+        ConsultingProject project = findById(id);
         project.setStatus(status);
         return consultingProjectRepository.save(project);
+    }
+
+    @Transactional
+    public ConsultingProject addMilestone(Long projectId, MilestoneRequest request) {
+        ConsultingProject project = findById(projectId);
+        Milestone milestone = new Milestone(request.getTitle(), request.getTargetDate(), request.isComplete());
+        project.addMilestone(milestone);
+        return consultingProjectRepository.save(project);
+    }
+
+    @Transactional
+    public ConsultingProject updateMilestoneCompletion(Long projectId, Long milestoneId, boolean complete) {
+        ConsultingProject project = findById(projectId);
+        Milestone milestone = project.getMilestones().stream()
+                .filter(candidate -> milestoneId.equals(candidate.getId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Milestone not found: " + milestoneId));
+        milestone.setComplete(complete);
+        return consultingProjectRepository.save(project);
+    }
+
+    private ConsultingProject findById(Long id) {
+        return consultingProjectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found: " + id));
     }
 }

@@ -8,6 +8,7 @@ import com.ibmjob.hybridportal.dto.AnalyzerForm;
 import com.ibmjob.hybridportal.dto.ClientRequest;
 import com.ibmjob.hybridportal.dto.CloudAssessmentRequest;
 import com.ibmjob.hybridportal.dto.CloudRecommendation;
+import com.ibmjob.hybridportal.dto.MilestoneRequest;
 import com.ibmjob.hybridportal.dto.ProjectRequest;
 import com.ibmjob.hybridportal.dto.ProjectStatusUpdate;
 import com.ibmjob.hybridportal.service.AnalyticsService;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -97,6 +99,25 @@ public class DashboardController {
     public String updateProjectStatus(@PathVariable Long id, @Valid @ModelAttribute ProjectStatusUpdate statusUpdate, RedirectAttributes redirectAttributes) {
         projectService.updateStatus(id, statusUpdate.getStatus());
         redirectAttributes.addFlashAttribute("success", "Project status updated.");
+        return "redirect:/projects";
+    }
+
+    @PostMapping("/projects/{projectId}/milestones")
+    public String addMilestone(@PathVariable Long projectId, @Valid @ModelAttribute MilestoneRequest milestoneRequest, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            addProjectModel(model);
+            model.addAttribute("formError", "Add a milestone title and target date.");
+            return "projects";
+        }
+        projectService.addMilestone(projectId, milestoneRequest);
+        redirectAttributes.addFlashAttribute("success", "Milestone added.");
+        return "redirect:/projects";
+    }
+
+    @PostMapping("/projects/{projectId}/milestones/{milestoneId}/complete")
+    public String updateMilestoneCompletion(@PathVariable Long projectId, @PathVariable Long milestoneId, @RequestParam boolean complete, RedirectAttributes redirectAttributes) {
+        projectService.updateMilestoneCompletion(projectId, milestoneId, complete);
+        redirectAttributes.addFlashAttribute("success", "Milestone updated.");
         return "redirect:/projects";
     }
 

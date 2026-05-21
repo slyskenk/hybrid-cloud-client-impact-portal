@@ -22,7 +22,7 @@ https://github.com/slyskenk/hybrid-cloud-client-impact-portal
 
 - Dashboard with portfolio metrics, client readiness, project status, and mock cloud resources.
 - Client page with searchable client table and client creation form.
-- Project page with project creation and status update workflow.
+- Project page with project creation, milestone tracking, and status update workflow.
 - Analytics page that accepts JSON or XML assessments and produces migration recommendations.
 - API endpoints protected with HTTP Basic auth for integration-style testing.
 - H2 in-memory database seeded with sample consulting data at startup.
@@ -161,6 +161,25 @@ curl.exe -u consultant:consult123 `
   http://localhost:8080/api/projects
 ```
 
+Add a project milestone:
+
+```powershell
+curl.exe -u consultant:consult123 `
+  -H "Content-Type: application/json" `
+  -d "{\"title\":\"Executive checkpoint\",\"targetDate\":\"2026-07-18\",\"complete\":false}" `
+  http://localhost:8080/api/projects/1/milestones
+```
+
+Mark a milestone complete:
+
+```powershell
+curl.exe -u consultant:consult123 `
+  -X PATCH `
+  -H "Content-Type: application/json" `
+  -d "{\"complete\":true}" `
+  http://localhost:8080/api/projects/1/milestones/2
+```
+
 ## Tests
 
 Run all tests:
@@ -234,5 +253,5 @@ This project can be presented as a consulting delivery platform: client profiles
 - Add PostgreSQL profile for deployment.
 - Add OpenAPI documentation.
 - Add user persistence instead of in-memory demo users.
-- Add project milestone editing screens.
+- Add milestone due-date reminders and overdue indicators.
 - Deploy to Render, Railway, Azure App Service, or IBM Cloud.

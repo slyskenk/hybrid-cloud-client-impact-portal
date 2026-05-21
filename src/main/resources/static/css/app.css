@@ -292,6 +292,68 @@ th {
     margin-top: 0;
 }
 
+.milestone-list {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.milestone-list.compact {
+    margin-top: 0.8rem;
+}
+
+.milestone-item {
+    align-items: center;
+    background: var(--soft);
+    border-left: 4px solid var(--amber);
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 0.55rem 0.65rem;
+}
+
+.milestone-item.complete {
+    border-left-color: var(--green);
+}
+
+.milestone-item form {
+    margin: 0;
+}
+
+.milestone-item strong,
+.milestone-item span {
+    display: block;
+}
+
+.milestone-item span,
+.compact-copy {
+    color: var(--muted);
+    font-size: 0.86rem;
+}
+
+.milestone-check {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    min-width: 4rem;
+    padding: 0.4rem 0.55rem;
+}
+
+.milestone-form {
+    align-items: center;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: minmax(8rem, 1fr) auto auto;
+    margin-top: 0.75rem;
+}
+
+.milestone-form input {
+    width: 100%;
+}
+
+.milestone-form button {
+    padding: 0.55rem 0.75rem;
+}
+
 .stacked-form {
     display: grid;
     gap: 0.9rem;
@@ -499,6 +561,10 @@ th {
     .inline-form {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .milestone-form {
+        grid-template-columns: 1fr;
     }
 
     .inline-form select,

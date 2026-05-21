@@ -6,14 +6,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,6 +40,26 @@ class PortalIntegrationTest {
         mockMvc.perform(get("/clients"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Horizon Financial")));
+    }
+
+    @Test
+    @WithMockUser(roles = "CONSULTANT")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void projectPageShowsAndCreatesMilestones() throws Exception {
+        mockMvc.perform(get("/projects"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Architecture review")));
+
+        mockMvc.perform(post("/projects/1/milestones")
+                        .with(csrf())
+                        .param("title", "Executive checkpoint")
+                        .param("targetDate", "2026-07-18"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+
+        mockMvc.perform(get("/projects"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Executive checkpoint")));
     }
 
     @Test
@@ -148,5 +171,37 @@ class PortalIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Atlas Energy"))
                 .andExpect(jsonPath("$.riskLevel").value("MEDIUM"));
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void projectApiReturnsAndUpdatesMilestones() throws Exception {
+        mockMvc.perform(get("/api/projects").with(httpBasic("consultant", "consult123")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].milestones[0].title").value("Architecture review"))
+                .andExpect(jsonPath("$[0].milestoneCompletionPercent").value(50));
+
+        String newMilestone = """
+                {
+                  "title": "Go-live readiness",
+                  "targetDate": "2026-08-01",
+                  "complete": false
+                }
+                """;
+
+        mockMvc.perform(post("/api/projects/1/milestones")
+                        .with(httpBasic("consultant", "consult123"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newMilestone))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.milestones[2].title").value("Go-live readiness"))
+                .andExpect(jsonPath("$.milestoneCompletionPercent").value(33));
+
+        mockMvc.perform(patch("/api/projects/1/milestones/2")
+                        .with(httpBasic("consultant", "consult123"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"complete\":true}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.milestones[1].complete").value(true));
     }
 }
