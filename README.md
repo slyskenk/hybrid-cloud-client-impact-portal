@@ -47,7 +47,7 @@ The portal demonstrates how a Java application developer can turn consulting dis
 
 ![XML analytics recommendation](docs/screenshots/analytics-xml.png)
 
-## IBM Consulting Alignment
+## IBM Consulting Alignment:
 
 - Java OOP: domain inheritance, encapsulated entities, services, DTOs, enums, and validation.
 - Core CS: lists, maps, grouping, sorting, search, and rule-based recommendation logic.
