@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.Map;
@@ -37,6 +38,13 @@ public class RestExceptionHandler {
     ResponseEntity<Map<String, Object>> handleMalformedPayload(Exception exception) {
         log.warn("Malformed request payload: {}", exception.getMessage());
         return ResponseEntity.badRequest().body(error(HttpStatus.BAD_REQUEST, "Request payload could not be parsed"));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    ResponseEntity<Map<String, Object>> handleMissingResource(NoResourceFoundException exception) {
+        log.debug("Static resource not found: {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(error(HttpStatus.NOT_FOUND, "Resource not found"));
     }
 
     @ExceptionHandler(Exception.class)

@@ -35,6 +35,20 @@ class PortalIntegrationTest {
     }
 
     @Test
+    void faviconRequestIsHandledWithoutAnApplicationError() throws Exception {
+        mockMvc.perform(get("/favicon.ico"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void missingStaticResourcesReturnNotFound() throws Exception {
+        mockMvc.perform(get("/css/missing.css"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("Resource not found"));
+    }
+
+    @Test
     @WithMockUser(roles = "CONSULTANT")
     void clientPageLoadsForConsultants() throws Exception {
         mockMvc.perform(get("/clients"))
