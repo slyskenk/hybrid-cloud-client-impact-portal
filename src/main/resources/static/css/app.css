@@ -44,6 +44,11 @@ button {
     font-weight: 700;
 }
 
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
 input,
 select,
 textarea {
@@ -85,6 +90,17 @@ select {
     gap: 1rem;
 }
 
+.topbar nav a,
+.link-button {
+    border-radius: 6px;
+    padding: 0.35rem 0.45rem;
+}
+
+.topbar nav a:hover,
+.link-button:hover {
+    background: #393939;
+}
+
 .topbar form {
     margin: 0;
 }
@@ -92,7 +108,7 @@ select {
 .link-button {
     background: transparent;
     color: #ffffff;
-    padding: 0;
+    font-weight: 400;
 }
 
 .page {
@@ -297,6 +313,11 @@ th {
     width: 100%;
 }
 
+.field-error {
+    color: #da1e28;
+    font-weight: 700;
+}
+
 .inline-form {
     align-items: center;
     display: flex;
@@ -344,6 +365,13 @@ th {
     color: var(--teal);
     display: block;
     font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.recommendation small {
+    color: var(--text);
+    display: block;
+    font-weight: 600;
     margin-bottom: 0.35rem;
 }
 

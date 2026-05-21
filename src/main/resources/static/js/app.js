@@ -29,22 +29,8 @@
 
         if (runAnalysis && analysisResult) {
             runAnalysis.addEventListener("click", function () {
-                const request = {
-                    clientName: "Horizon Financial",
-                    workloads: ["payments", "fraud analytics", "customer portal"],
-                    legacySystemCount: 5,
-                    complianceRequired: true,
-                    currentCloudUsagePercent: 35,
-                    automationMaturity: 4,
-                    integrationComplexity: 6,
-                    dataSensitivity: "HIGH"
-                };
-
-                fetch("/api/analytics/recommendations", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(request)
-                })
+                runAnalysis.disabled = true;
+                fetch("/analytics/sample")
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error("Analyzer request failed");
@@ -59,6 +45,8 @@
                         });
 
                         analysisResult.replaceChildren();
+                        const client = document.createElement("small");
+                        client.textContent = response.clientName;
                         const label = document.createElement("span");
                         label.textContent = response.riskLevel + " risk | " + response.migrationPath;
                         const summary = document.createElement("strong");
@@ -67,10 +55,13 @@
                         items.forEach(function (item) {
                             list.appendChild(item);
                         });
-                        analysisResult.append(label, summary, list);
+                        analysisResult.append(client, label, summary, list);
                     })
                     .catch(function () {
                         analysisResult.innerHTML = "<span>Error</span><strong>Unable to run analysis.</strong>";
+                    })
+                    .finally(function () {
+                        runAnalysis.disabled = false;
                     });
             });
         }

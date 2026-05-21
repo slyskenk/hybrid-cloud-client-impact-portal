@@ -12,7 +12,7 @@ https://github.com/slyskenk/hybrid-cloud-client-impact-portal
 
 - Java OOP: domain inheritance, encapsulated entities, services, DTOs, enums, and validation.
 - Core CS: lists, maps, grouping, sorting, search, and rule-based recommendation logic.
-- Web technologies: Spring MVC, Thymeleaf, HTML, CSS, JavaScript, and JQuery-compatible pages.
+- Web technologies: Spring MVC, Thymeleaf, HTML, CSS, and JavaScript with no external CDN requirement.
 - REST architecture: `/api/clients`, `/api/projects`, `/api/analytics`.
 - Data integration: JSON and XML cloud assessment import, analysis, and JSON export.
 - Collaboration workflow: Admin, Consultant, and Client roles.

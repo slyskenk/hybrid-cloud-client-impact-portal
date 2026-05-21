@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,9 +10,10 @@
 <header class="topbar">
     <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
     <nav>
-        <a th:href="@{/clients}">Clients</a>
-        <a th:href="@{/projects}">Projects</a>
-        <a th:href="@{/analytics}">Analytics</a>
+        <a th:href="@{/}">Dashboard</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/clients}">Clients</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/projects}">Projects</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/analytics}">Analytics</a>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="link-button">Sign out</button>
         </form>
@@ -34,7 +35,7 @@
         <article class="panel">
             <div class="section-heading">
                 <h2>Clients</h2>
-                <input id="client-search" type="search" placeholder="Search clients">
+                <input id="client-search" type="search" placeholder="Search clients" aria-label="Search clients">
             </div>
             <div class="table-wrap">
                 <table>
@@ -71,22 +72,27 @@
                 <label class="field">
                     <span>Name</span>
                     <input th:field="*{name}" type="text" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</small>
                 </label>
                 <label class="field">
                     <span>Industry</span>
                     <input th:field="*{industry}" type="text" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('industry')}" th:errors="*{industry}">Industry error</small>
                 </label>
                 <label class="field">
                     <span>Region</span>
                     <input th:field="*{region}" type="text" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('region')}" th:errors="*{region}">Region error</small>
                 </label>
                 <label class="field">
                     <span>Contact Email</span>
                     <input th:field="*{contactEmail}" type="email" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('contactEmail')}" th:errors="*{contactEmail}">Email error</small>
                 </label>
                 <label class="field">
                     <span>AI Readiness Score</span>
                     <input th:field="*{aiReadinessScore}" type="number" min="0" max="100" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('aiReadinessScore')}" th:errors="*{aiReadinessScore}">Score error</small>
                 </label>
                 <label class="field">
                     <span>Risk Level</span>
@@ -111,7 +117,6 @@
     </section>
 </main>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script th:src="@{/js/app.js}"></script>
 </body>
 </html>

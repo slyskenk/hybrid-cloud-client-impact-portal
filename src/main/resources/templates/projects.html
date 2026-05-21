@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,9 +10,10 @@
 <header class="topbar">
     <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
     <nav>
-        <a th:href="@{/clients}">Clients</a>
-        <a th:href="@{/projects}">Projects</a>
-        <a th:href="@{/analytics}">Analytics</a>
+        <a th:href="@{/}">Dashboard</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/clients}">Clients</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/projects}">Projects</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/analytics}">Analytics</a>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="link-button">Sign out</button>
         </form>
@@ -84,26 +85,32 @@
                         <option value="">Choose client</option>
                         <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name}">Client</option>
                     </select>
+                    <small class="field-error" th:if="${#fields.hasErrors('clientId')}" th:errors="*{clientId}">Client error</small>
                 </label>
                 <label class="field">
                     <span>Name</span>
                     <input th:field="*{name}" type="text" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</small>
                 </label>
                 <label class="field">
                     <span>Description</span>
                     <textarea th:field="*{description}" rows="4" required></textarea>
+                    <small class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description error</small>
                 </label>
                 <label class="field">
                     <span>Deadline</span>
                     <input th:field="*{deadline}" type="date" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}">Deadline error</small>
                 </label>
                 <label class="field">
                     <span>Priority</span>
                     <input th:field="*{priority}" type="number" min="1" max="5" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}">Priority error</small>
                 </label>
                 <label class="field">
                     <span>Consultant</span>
                     <input th:field="*{assignedConsultant}" type="text" required>
+                    <small class="field-error" th:if="${#fields.hasErrors('assignedConsultant')}" th:errors="*{assignedConsultant}">Consultant error</small>
                 </label>
                 <label class="field">
                     <span>Migration Path</span>

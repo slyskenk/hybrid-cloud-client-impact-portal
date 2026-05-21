@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,9 +10,10 @@
 <header class="topbar">
     <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
     <nav>
-        <a th:href="@{/clients}">Clients</a>
-        <a th:href="@{/projects}">Projects</a>
-        <a th:href="@{/analytics}">Analytics</a>
+        <a th:href="@{/}">Dashboard</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/clients}">Clients</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/projects}">Projects</a>
+        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/analytics}">Analytics</a>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="link-button">Sign out</button>
         </form>
@@ -58,6 +59,7 @@
             </div>
             <p class="flash error" th:if="${analysisError}" th:text="${analysisError}">Error</p>
             <div class="recommendation" th:if="${recommendation}">
+                <small th:text="${recommendation.clientName()}">Client name</small>
                 <span th:text="${recommendation.riskLevel() + ' risk | ' + recommendation.migrationPath()}">Risk</span>
                 <strong th:text="${recommendation.readinessScore() + '% readiness, ' + recommendation.estimatedSprintCount() + ' sprint plan'}">Score</strong>
                 <ul>
@@ -65,8 +67,8 @@
                 </ul>
             </div>
             <div class="callout" th:unless="${recommendation}">
-                <strong>Ready for analysis</strong>
-                <span>Paste a client cloud assessment and run the analyzer.</span>
+                <strong>Awaiting assessment</strong>
+                <span>JSON and XML inputs are supported.</span>
             </div>
             <div th:if="${recommendationJson}">
                 <div class="section-heading compact">

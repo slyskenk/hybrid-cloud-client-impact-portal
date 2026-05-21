@@ -1,6 +1,6 @@
 package com.ibmjob.hybridportal.controller;
 
-import com.ibmjob.hybridportal.domain.ClientProfile;
+import com.ibmjob.hybridportal.dto.ClientRequest;
 import com.ibmjob.hybridportal.dto.ClientResponse;
 import com.ibmjob.hybridportal.service.ClientService;
 import jakarta.validation.Valid;
@@ -44,8 +44,8 @@ public class ApiClientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ClientResponse create(@Valid @RequestBody ClientProfile clientProfile) {
-        log.info("Creating client profile name={}", clientProfile.getName());
-        return ClientResponse.from(clientService.save(clientProfile));
+    public ClientResponse create(@Valid @RequestBody ClientRequest clientRequest) {
+        log.info("Creating client profile name={}", clientRequest.getName());
+        return ClientResponse.from(clientService.create(clientRequest));
     }
 }
