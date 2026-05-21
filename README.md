@@ -8,6 +8,45 @@ GitHub repository:
 https://github.com/slyskenk/hybrid-cloud-client-impact-portal
 ```
 
+## Purpose
+
+The portal demonstrates how a Java application developer can turn consulting discovery data into a usable delivery workspace. It gives an enterprise client and consulting team a shared view of cloud readiness, migration risk, delivery milestones, and recommendation outputs.
+
+## Primary Use Cases
+
+- Assess a client's cloud and AI readiness from JSON or XML assessment data.
+- Track consulting projects, owners, migration paths, deadlines, statuses, and milestones.
+- Maintain a searchable portfolio of client profiles with readiness and risk signals.
+- Expose REST endpoints so client, project, and analytics data can be integrated with other systems.
+- Demonstrate role-based access for Admin, Consultant, and Client users.
+
+## How The App Works
+
+1. Sign in with a demo account.
+2. Review portfolio health on the dashboard.
+3. Add or search client records on the Clients page.
+4. Create delivery projects, update status, and complete milestones on the Projects page.
+5. Paste a JSON or XML cloud assessment into Analytics to generate a migration recommendation and exportable JSON output.
+6. Use the REST API for integration-style access to clients, projects, and analytics.
+
+## Screenshots
+
+### Dashboard
+
+![Dashboard overview](docs/screenshots/dashboard.png)
+
+### Clients
+
+![Client portfolio](docs/screenshots/clients.png)
+
+### Projects
+
+![Project tracker](docs/screenshots/projects.png)
+
+### XML Analytics
+
+![XML analytics recommendation](docs/screenshots/analytics-xml.png)
+
 ## IBM Consulting Alignment
 
 - Java OOP: domain inheritance, encapsulated entities, services, DTOs, enums, and validation.
@@ -180,9 +219,21 @@ curl.exe -u consultant:consult123 `
   http://localhost:8080/api/projects/1/milestones/2
 ```
 
-## Tests
+## Software Verification And Validation
 
-Run all tests:
+Run the full Maven verification lifecycle:
+
+```powershell
+mvn verify
+```
+
+Or with the local Maven install:
+
+```powershell
+tools\apache-maven-3.9.16\bin\mvn.cmd "-Dmaven.repo.local=.m2\repository" verify
+```
+
+Run tests only:
 
 ```powershell
 mvn test
@@ -194,13 +245,37 @@ Or with the local Maven install:
 tools\apache-maven-3.9.16\bin\mvn.cmd "-Dmaven.repo.local=.m2\repository" test
 ```
 
-Current coverage includes:
+Current automated SV&V coverage includes:
 
 - Cloud recommendation scoring.
 - Anonymous web redirect behavior.
 - Consultant page access.
+- Client role access restrictions.
+- Client and project web form creation.
 - HTTP Basic API access.
 - JSON analyzer endpoint behavior.
+- XML analyzer endpoint behavior.
+- JSON and XML analytics web form behavior.
+- Recommendation JSON export behavior.
+- Client DTO validation and bad request handling.
+- Project milestone creation and completion.
+- Static resource and favicon handling.
+- Malformed request payload handling.
+
+Manual validation checklist used for browser QA:
+
+- Sign in as `consultant / consult123`.
+- Confirm dashboard metrics, client readiness table, project tracker, cloud resources, and sample assessment.
+- Create a client profile.
+- Create a project for that client.
+- Update project status.
+- Add and complete a milestone.
+- Analyze a JSON assessment.
+- Analyze an XML assessment.
+- Confirm `/favicon.ico`, `/api/clients`, `/api/projects`, and `/api/analytics` return expected statuses.
+- Scan application logs for new `ERROR`, `Unexpected application error`, static-resource, or exception entries.
+
+Last local SV&V pass: May 21, 2026.
 
 ## Project Structure
 

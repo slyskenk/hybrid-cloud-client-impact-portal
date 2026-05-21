@@ -59,6 +59,26 @@ class PortalIntegrationTest {
     @Test
     @WithMockUser(roles = "CONSULTANT")
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void clientWebFormCreatesClientProfile() throws Exception {
+        mockMvc.perform(post("/clients")
+                        .with(csrf())
+                        .param("name", "Web Form Client")
+                        .param("industry", "Manufacturing")
+                        .param("region", "North America")
+                        .param("contactEmail", "web-form@example.com")
+                        .param("aiReadinessScore", "82")
+                        .param("riskLevel", "LOW"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/clients"));
+
+        mockMvc.perform(get("/clients"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Web Form Client")));
+    }
+
+    @Test
+    @WithMockUser(roles = "CONSULTANT")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void projectPageShowsAndCreatesMilestones() throws Exception {
         mockMvc.perform(get("/projects"))
                 .andExpect(status().isOk())
@@ -74,6 +94,27 @@ class PortalIntegrationTest {
         mockMvc.perform(get("/projects"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Executive checkpoint")));
+    }
+
+    @Test
+    @WithMockUser(roles = "CONSULTANT")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void projectWebFormCreatesProject() throws Exception {
+        mockMvc.perform(post("/projects")
+                        .with(csrf())
+                        .param("clientId", "1")
+                        .param("name", "Web Delivery Plan")
+                        .param("description", "Create a tested migration delivery plan from the web form.")
+                        .param("deadline", "2026-09-15")
+                        .param("priority", "2")
+                        .param("assignedConsultant", "Casey Nguyen")
+                        .param("migrationPath", "HYBRID_CLOUD"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+
+        mockMvc.perform(get("/projects"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Web Delivery Plan")));
     }
 
     @Test
@@ -124,6 +165,36 @@ class PortalIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = "CONSULTANT")
+    void analyticsWebFormDisplaysXmlRecommendation() throws Exception {
+        String payload = """
+                <CloudAssessmentRequest>
+                    <clientName>Horizon Financial XML</clientName>
+                    <workloads>
+                        <workload>payments</workload>
+                        <workload>fraud analytics</workload>
+                        <workload>customer portal</workload>
+                    </workloads>
+                    <legacySystemCount>5</legacySystemCount>
+                    <complianceRequired>true</complianceRequired>
+                    <currentCloudUsagePercent>35</currentCloudUsagePercent>
+                    <automationMaturity>4</automationMaturity>
+                    <integrationComplexity>6</integrationComplexity>
+                    <dataSensitivity>HIGH</dataSensitivity>
+                </CloudAssessmentRequest>
+                """;
+
+        mockMvc.perform(post("/analytics")
+                        .with(csrf())
+                        .param("format", "XML")
+                        .param("payload", payload))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Horizon Financial XML")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("MODERNIZATION_FIRST")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Export JSON")));
+    }
+
+    @Test
     void analyticsApiAcceptsBasicAuth() throws Exception {
         mockMvc.perform(get("/api/analytics").with(httpBasic("consultant", "consult123")))
                 .andExpect(status().isOk())
@@ -156,6 +227,44 @@ class PortalIntegrationTest {
     }
 
     @Test
+    void analyzerXmlApiReturnsRecommendation() throws Exception {
+        String payload = """
+                <CloudAssessmentRequest>
+                    <clientName>Horizon Financial XML API</clientName>
+                    <workloads>
+                        <workload>payments</workload>
+                        <workload>fraud analytics</workload>
+                        <workload>customer portal</workload>
+                    </workloads>
+                    <legacySystemCount>5</legacySystemCount>
+                    <complianceRequired>true</complianceRequired>
+                    <currentCloudUsagePercent>35</currentCloudUsagePercent>
+                    <automationMaturity>4</automationMaturity>
+                    <integrationComplexity>6</integrationComplexity>
+                    <dataSensitivity>HIGH</dataSensitivity>
+                </CloudAssessmentRequest>
+                """;
+
+        mockMvc.perform(post("/api/analytics/recommendations/xml")
+                        .with(httpBasic("consultant", "consult123"))
+                        .contentType(MediaType.APPLICATION_XML)
+                        .content(payload))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.clientName").value("Horizon Financial XML API"))
+                .andExpect(jsonPath("$.riskLevel").value("HIGH"))
+                .andExpect(jsonPath("$.migrationPath").value("MODERNIZATION_FIRST"));
+    }
+
+    @Test
+    void sampleRecommendationExportEndpointReturnsJson() throws Exception {
+        mockMvc.perform(get("/api/analytics/recommendations/export/sample")
+                        .with(httpBasic("consultant", "consult123")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Horizon Financial")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("MODERNIZATION_FIRST")));
+    }
+
+    @Test
     void malformedAnalyzerApiPayloadReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/api/analytics/recommendations")
                         .with(httpBasic("consultant", "consult123"))
@@ -185,6 +294,28 @@ class PortalIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Atlas Energy"))
                 .andExpect(jsonPath("$.riskLevel").value("MEDIUM"));
+    }
+
+    @Test
+    void clientApiRejectsInvalidValidationPayload() throws Exception {
+        String payload = """
+                {
+                  "name": "",
+                  "industry": "Energy",
+                  "region": "Africa",
+                  "contactEmail": "not-an-email",
+                  "aiReadinessScore": 140,
+                  "riskLevel": "MEDIUM"
+                }
+                """;
+
+        mockMvc.perform(post("/api/clients")
+                        .with(httpBasic("consultant", "consult123"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"));
     }
 
     @Test
