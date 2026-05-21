@@ -13,7 +13,7 @@
         <a th:href="@{/}">Dashboard</a>
         <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/clients}">Clients</a>
         <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/projects}">Projects</a>
-        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/analytics}">Analytics</a>
+        <a class="active" aria-current="page" sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/analytics}">Analytics</a>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="link-button">Sign out</button>
         </form>
@@ -23,12 +23,12 @@
 <main class="page">
     <section class="page-heading">
         <div>
-            <p class="eyebrow">Hybrid cloud analyzer</p>
-            <h1>Turn JSON or XML assessment data into a migration recommendation.</h1>
+            <p class="eyebrow">Cloud analyzer</p>
+            <h1>Convert assessment data into a clear migration recommendation.</h1>
         </div>
         <div class="score-pill">
             <span th:text="${#numbers.formatDecimal(summary.averageReadinessScore(), 1, 1)}">0.0</span>
-            <small>avg readiness</small>
+            <small>portfolio readiness</small>
         </div>
     </section>
 
@@ -48,6 +48,7 @@
                 <label class="field">
                     <span>Payload</span>
                     <textarea class="code-input" th:field="*{payload}" rows="18" spellcheck="false"></textarea>
+                    <small class="field-hint">Use the sample payload as a template, then adjust workloads, risk, and platform maturity.</small>
                 </label>
                 <button type="submit">Analyze assessment</button>
             </form>
@@ -68,7 +69,7 @@
             </div>
             <div class="callout" th:unless="${recommendation}">
                 <strong>Awaiting assessment</strong>
-                <span>JSON and XML inputs are supported.</span>
+                <span>JSON and XML inputs are supported. Results include risk, path, sprint count, and action items.</span>
             </div>
             <div th:if="${recommendationJson}">
                 <div class="section-heading compact">

@@ -11,7 +11,7 @@
     <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
     <nav>
         <a th:href="@{/}">Dashboard</a>
-        <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/clients}">Clients</a>
+        <a class="active" aria-current="page" sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/clients}">Clients</a>
         <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/projects}">Projects</a>
         <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/analytics}">Analytics</a>
         <form th:action="@{/logout}" method="post">
@@ -24,7 +24,7 @@
     <section class="page-heading">
         <div>
             <p class="eyebrow">Client portfolio</p>
-            <h1>Readiness, risk, and industry coverage.</h1>
+            <h1>Clear client records for planning, risk, and follow-up.</h1>
         </div>
     </section>
 
@@ -45,7 +45,7 @@
                         <th>Industry</th>
                         <th>Region</th>
                         <th>Contact</th>
-                        <th>AI Score</th>
+                        <th>Readiness</th>
                         <th>Risk</th>
                     </tr>
                     </thead>
@@ -55,8 +55,13 @@
                         <td th:text="${client.industry}">Industry</td>
                         <td th:text="${client.region}">Region</td>
                         <td th:text="${client.contactEmail}">Email</td>
-                        <td><span class="score" th:text="${client.aiReadinessScore}">0</span></td>
-                        <td><span class="status" th:text="${client.riskLevel}">MEDIUM</span></td>
+                        <td>
+                            <div class="meter" th:style="'--value:' + ${client.aiReadinessScore} + '%'">
+                                <span></span>
+                            </div>
+                            <small class="meter-label" th:text="${client.aiReadinessScore + '%'}">0%</small>
+                        </td>
+                        <td><span class="status" th:classappend="' risk-' + ${#strings.toLowerCase(client.riskLevel.name())}" th:text="${client.riskLevel}">MEDIUM</span></td>
                     </tr>
                     </tbody>
                 </table>
@@ -71,22 +76,22 @@
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <label class="field">
                     <span>Name</span>
-                    <input th:field="*{name}" type="text" required>
+                    <input th:field="*{name}" type="text" placeholder="Client name" required>
                     <small class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</small>
                 </label>
                 <label class="field">
                     <span>Industry</span>
-                    <input th:field="*{industry}" type="text" required>
+                    <input th:field="*{industry}" type="text" placeholder="Banking, retail, healthcare" required>
                     <small class="field-error" th:if="${#fields.hasErrors('industry')}" th:errors="*{industry}">Industry error</small>
                 </label>
                 <label class="field">
                     <span>Region</span>
-                    <input th:field="*{region}" type="text" required>
+                    <input th:field="*{region}" type="text" placeholder="Region or market" required>
                     <small class="field-error" th:if="${#fields.hasErrors('region')}" th:errors="*{region}">Region error</small>
                 </label>
                 <label class="field">
                     <span>Contact Email</span>
-                    <input th:field="*{contactEmail}" type="email" required>
+                    <input th:field="*{contactEmail}" type="email" placeholder="sponsor@example.com" required>
                     <small class="field-error" th:if="${#fields.hasErrors('contactEmail')}" th:errors="*{contactEmail}">Email error</small>
                 </label>
                 <label class="field">

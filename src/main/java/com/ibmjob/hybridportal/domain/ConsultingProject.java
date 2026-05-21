@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -45,6 +46,7 @@ public class ConsultingProject extends PortfolioRecord {
 
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("targetDate ASC")
     private List<Milestone> milestones = new ArrayList<>();
 
     public ConsultingProject() {
@@ -67,6 +69,19 @@ public class ConsultingProject extends PortfolioRecord {
 
     public boolean isBlocked() {
         return ProjectStatus.BLOCKED.equals(status);
+    }
+
+    public long getCompletedMilestoneCount() {
+        return milestones.stream()
+                .filter(Milestone::isComplete)
+                .count();
+    }
+
+    public int getMilestoneCompletionPercent() {
+        if (milestones.isEmpty()) {
+            return 0;
+        }
+        return (int) Math.round(getCompletedMilestoneCount() * 100.0 / milestones.size());
     }
 
     public String getName() {

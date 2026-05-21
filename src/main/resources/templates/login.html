@@ -9,8 +9,9 @@
 <body class="login-page">
 <main class="login-shell">
     <section class="login-panel">
-        <p class="eyebrow">IBM Consulting portfolio demo</p>
+        <p class="eyebrow">Portfolio demo</p>
         <h1>Hybrid Cloud Client Impact Portal</h1>
+        <p class="login-intro">Sign in with a demo account to review client readiness, project delivery, and cloud assessment recommendations.</p>
         <form th:action="@{/login}" method="post" class="login-form">
             <label>
                 Username
@@ -25,9 +26,10 @@
         <p class="form-message error" th:if="${param.error}">Invalid username or password.</p>
         <p class="form-message" th:if="${param.logout}">You have been signed out.</p>
         <div class="demo-users">
-            <span>admin / admin123</span>
-            <span>consultant / consult123</span>
-            <span>client / client123</span>
+            <strong>Demo accounts</strong>
+            <span><code>admin</code> / <code>admin123</code></span>
+            <span><code>consultant</code> / <code>consult123</code></span>
+            <span><code>client</code> / <code>client123</code></span>
         </div>
     </section>
 </main>

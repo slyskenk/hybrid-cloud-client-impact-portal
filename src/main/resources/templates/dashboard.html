@@ -10,7 +10,7 @@
 <header class="topbar">
     <a class="brand" th:href="@{/}">Hybrid Cloud Client Impact Portal</a>
     <nav>
-        <a th:href="@{/}">Dashboard</a>
+        <a class="active" aria-current="page" th:href="@{/}">Dashboard</a>
         <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/clients}">Clients</a>
         <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/projects}">Projects</a>
         <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" th:href="@{/analytics}">Analytics</a>
@@ -23,12 +23,16 @@
 <main class="page">
     <section class="hero-band">
         <div>
-            <p class="eyebrow">Consulting delivery cockpit</p>
+            <p class="eyebrow">Delivery cockpit</p>
             <h1>Client impact, cloud readiness, and project momentum in one view.</h1>
+            <div class="hero-actions" sec:authorize="hasAnyRole('ADMIN','CONSULTANT')">
+                <a class="button-link" th:href="@{/projects}">Review projects</a>
+                <a class="button-link secondary" th:href="@{/analytics}">Run assessment</a>
+            </div>
         </div>
         <div class="score-pill">
             <span th:text="${#numbers.formatDecimal(summary.averageReadinessScore(), 1, 1)}">0.0</span>
-            <small>avg AI readiness</small>
+            <small>average readiness</small>
         </div>
     </section>
 
@@ -36,21 +40,24 @@
         <article class="metric-card">
             <span>Total clients</span>
             <strong th:text="${summary.totalClients()}">0</strong>
+            <small>active portfolio records</small>
         </article>
         <article class="metric-card">
             <span>Active projects</span>
             <strong th:text="${summary.activeProjects()}">0</strong>
+            <small>planned or in delivery</small>
         </article>
         <article class="metric-card">
             <span>Blocked projects</span>
             <strong th:text="${summary.blockedProjects()}">0</strong>
+            <small>need attention</small>
         </article>
     </section>
 
     <section class="content-grid">
         <article class="panel">
             <div class="section-heading">
-                <h2>Client Dashboard</h2>
+                <h2>Client Readiness</h2>
                 <input id="client-search" type="search" placeholder="Search clients" aria-label="Search clients">
             </div>
             <div class="table-wrap">
@@ -60,7 +67,7 @@
                         <th>Client</th>
                         <th>Industry</th>
                         <th>Region</th>
-                        <th>AI Score</th>
+                        <th>Readiness</th>
                         <th>Risk</th>
                     </tr>
                     </thead>
@@ -69,8 +76,13 @@
                         <td th:text="${client.name}">Client</td>
                         <td th:text="${client.industry}">Industry</td>
                         <td th:text="${client.region}">Region</td>
-                        <td><span class="score" th:text="${client.aiReadinessScore}">0</span></td>
-                        <td><span class="status" th:text="${client.riskLevel}">MEDIUM</span></td>
+                        <td>
+                            <div class="meter" th:style="'--value:' + ${client.aiReadinessScore} + '%'">
+                                <span></span>
+                            </div>
+                            <small class="meter-label" th:text="${client.aiReadinessScore + '%'}">0%</small>
+                        </td>
+                        <td><span class="status" th:classappend="' risk-' + ${#strings.toLowerCase(client.riskLevel.name())}" th:text="${client.riskLevel}">MEDIUM</span></td>
                     </tr>
                     </tbody>
                 </table>
@@ -79,13 +91,13 @@
 
         <article sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" class="panel">
             <div class="section-heading">
-                <h2>Hybrid Cloud Analyzer</h2>
+                <h2>Cloud Analyzer</h2>
                 <a sec:authorize="hasAnyRole('ADMIN','CONSULTANT')" class="small-link" th:href="@{/analytics}">Open analyzer</a>
             </div>
-            <button id="run-analysis" type="button">Run sample</button>
+            <button id="run-analysis" type="button">Run sample assessment</button>
             <div id="analysis-result" class="recommendation">
                 <span>Ready</span>
-                <strong>Sample assessment available</strong>
+                <strong>Sample assessment available.</strong>
             </div>
         </article>
     </section>
@@ -100,17 +112,18 @@
                 <div class="project-row" th:each="project : ${projects}">
                     <div>
                         <strong th:text="${project.name}">Project</strong>
-                        <span th:text="${project.assignedConsultant}">Consultant</span>
+                        <span th:text="${project.client.name + ' / ' + project.assignedConsultant}">Client / Consultant</span>
+                        <small th:text="${#lists.size(project.milestones) + ' milestones / ' + project.milestoneCompletionPercent + '% complete'}">Milestones</small>
                     </div>
-                    <span class="status" th:text="${project.status}">PLANNED</span>
+                    <span class="status" th:classappend="' status-' + ${#strings.toLowerCase(project.status.name())}" th:text="${project.status}">PLANNED</span>
                 </div>
             </div>
         </article>
 
         <article class="panel">
             <div class="section-heading">
-                <h2>Mock Cloud Resources</h2>
-                <span class="muted">/mock-cloud/resources</span>
+                <h2>Cloud Resources</h2>
+                <span class="muted">mock API</span>
             </div>
             <div class="resource-list">
                 <div class="resource-row" th:each="resource : ${resources}">
@@ -118,7 +131,7 @@
                         <strong th:text="${resource.type}">Resource</strong>
                         <span th:text="${resource.provider + ' - ' + resource.region}">Provider</span>
                     </div>
-                    <span class="status" th:text="${resource.health}">GREEN</span>
+                    <span class="status" th:classappend="' health-' + ${#strings.toLowerCase(resource.health)}" th:text="${resource.health}">GREEN</span>
                 </div>
             </div>
         </article>

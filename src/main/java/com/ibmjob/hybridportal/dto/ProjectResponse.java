@@ -28,10 +28,6 @@ public record ProjectResponse(
                 .sorted(Comparator.comparing(milestone -> milestone.getTargetDate() == null ? LocalDate.MAX : milestone.getTargetDate()))
                 .map(MilestoneResponse::from)
                 .toList();
-        int completionPercent = milestones.isEmpty()
-                ? 0
-                : (int) Math.round(milestones.stream().filter(MilestoneResponse::complete).count() * 100.0 / milestones.size());
-
         return new ProjectResponse(
                 project.getId(),
                 project.getName(),
@@ -44,7 +40,7 @@ public record ProjectResponse(
                 project.getClient().getId(),
                 project.getClient().getName(),
                 milestones,
-                completionPercent
+                project.getMilestoneCompletionPercent()
         );
     }
 }
